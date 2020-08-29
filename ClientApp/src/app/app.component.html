@@ -1,0 +1,41 @@
+<mat-sidenav-container fullscreen>
+    <mat-sidenav #sidenav mode="side">
+        <!-- <ul class="ul-menus">
+          <li *ngFor="let link of links" [routerLink]="link.Path" [ngClass]="activeLink == link.Title ? 'active-link' : ''">
+              {{ link.Title }}
+          </li>
+      </ul> -->
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <app-toolbar></app-toolbar>
+        <div class="main-content">
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-dark btn-folder" (click)="folderClick('/')">Go to Root Path</button>
+                    <h5>Current Path: {{ currentPath }}</h5>
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-4">
+
+                    <button class="btn btn-dark btn-folder" *ngFor="let folder of folders" (click)="folderClick(folder.Path)">{{ folder.Name }}</button>
+                </div>
+                <div class="col-md-4 files-section">
+                    <button class="btn btn-link" (click)="openVideoDialog(file.Path)" *ngFor="let file of files">{{ file.Name }}</button>
+                </div>
+                <div class="col-md-2">
+                </div>
+            </div>
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
