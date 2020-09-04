@@ -22,7 +22,7 @@ namespace LocFlixWebApi.Helpers
             foreach (var folder in folders)
             {
                 var relativePath = folder.Replace(_rootPath, string.Empty);
-                _heirarchy.Folders.Add( new LocFolder
+                _heirarchy.LocFiles.Add( new LocFile
                 {
                     Name = Path.GetFileName(folder),
                     Path = relativePath
@@ -35,10 +35,11 @@ namespace LocFlixWebApi.Helpers
                 if (_videoFormats.Contains(ext))
                 {
                     var relativePath = file.Replace(_rootPath, string.Empty);
-                    _heirarchy.Files.Add(new LocFile
+                    _heirarchy.LocFiles.Add(new LocFile
                     {
                         Name = Path.GetFileName(file),
-                        Path = relativePath
+                        Path = relativePath,
+                        IsFile = true
                     });
                 }
             }
