@@ -30,8 +30,11 @@ namespace LocFlixWebApi.Controllers
 
         [HttpGet]
         [Route("api/Heirarchy/SubFoldersAndFiles")]
-        public IHttpActionResult GetSubFoldersAndFiles(string path = null)
+        public IHttpActionResult GetSubFoldersAndFiles(string path)
         {
+            if (string.IsNullOrEmpty(path))
+                return BadRequest("Path is required");
+
             var folders = _fileExplorerService.GetSubFoldersAndFiles(path);
 
             return Ok(folders);
