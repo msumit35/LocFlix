@@ -1,7 +1,11 @@
-﻿using System;
+﻿using LocFlixWebApi.Services;
+using LocFlixWebApi.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using Unity;
+using Unity.WebApi;
 
 namespace LocFlixWebApi
 {
@@ -11,6 +15,11 @@ namespace LocFlixWebApi
         {
             // Web API configuration and services
             config.EnableCors();
+
+            var container = new UnityContainer();
+            container.RegisterType<IFileExplorerService, FileExplorerService>();
+            config.DependencyResolver = new UnityDependencyResolver(container);
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 

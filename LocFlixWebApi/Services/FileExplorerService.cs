@@ -1,14 +1,15 @@
-﻿using System;
+﻿using LocFlixWebApi.Models;
+using LocFlixWebApi.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
-using LocFlixWebApi.Models;
 
-namespace LocFlixWebApi.Helpers
+namespace LocFlixWebApi.Services
 {
-    public class GenerateStructure
+    public class FileExplorerService : IFileExplorerService
     {
         private string _rootPath = ConfigurationManager.AppSettings["RootPath"];
         private string[] _videoFormats = ConfigurationManager.AppSettings["VideoFormats"].Split(',');
@@ -22,7 +23,7 @@ namespace LocFlixWebApi.Helpers
             foreach (var folder in folders)
             {
                 var relativePath = folder.Replace(_rootPath, string.Empty);
-                _heirarchy.LocFiles.Add( new LocFile
+                _heirarchy.LocFiles.Add(new LocFile
                 {
                     Name = Path.GetFileName(folder),
                     Path = relativePath
@@ -45,6 +46,44 @@ namespace LocFlixWebApi.Helpers
             }
 
             return _heirarchy;
+        }
+
+        public LocRootFolder GetSubFoldersAndFiles(string path)
+        {
+            var folders = Directory.GetDirectories(path);
+            var files = Directory.GetFiles(path);
+            foreach (var folderPath in folders)
+            {
+                _heirarchy.LocFiles.Add(new LocFile
+                {
+                    Name = Path.GetFileName(folderPath),
+                    Path = folderPath
+                });
+            }
+
+            foreach (var filePath in files)
+            {
+                var ext = Path.GetExtension(filePath).Split('.')[1];
+                if (_videoFormats.Contains(ext))
+                {
+                    //var relativePath = file.Replace(_rootPath, string.Empty);
+                    _heirarchy.LocFiles.Add(new LocFile
+                    {
+                        Name = Path.GetFileName(filePath),
+                        Path = filePath,
+                        IsFile = true
+                    });
+                }
+            }
+
+            return _heirarchy;
+        }
+
+        public IEnumerable<DriveInfo> GetDrives()
+        {
+            var drives = DriveInfo.GetDrives();
+
+            return drives;
         }
     }
 }
