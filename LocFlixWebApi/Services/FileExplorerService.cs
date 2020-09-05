@@ -14,6 +14,7 @@ namespace LocFlixWebApi.Services
         private string _rootPath = ConfigurationManager.AppSettings["RootPath"];
         private string[] _videoFormats = ConfigurationManager.AppSettings["VideoFormats"].Split(',');
         private LocRootFolder _heirarchy = new LocRootFolder();
+        private string[] _ignoreFolders = ConfigurationManager.AppSettings["IgnoreFolders"].Split(',');
 
         public LocRootFolder GetFolders(string path)
         {
@@ -23,11 +24,16 @@ namespace LocFlixWebApi.Services
             foreach (var folder in folders)
             {
                 var relativePath = folder.Replace(_rootPath, string.Empty);
-                _heirarchy.LocFiles.Add(new LocFile
+                var filename = Path.GetFileName(folder);
+
+                if (!_ignoreFolders.Contains(filename))
                 {
-                    Name = Path.GetFileName(folder),
-                    Path = relativePath
-                });
+                    _heirarchy.LocFiles.Add(new LocFile
+                    {
+                        Name = filename,
+                        Path = relativePath
+                    });
+                }
             }
 
             foreach (var file in files)
@@ -54,11 +60,15 @@ namespace LocFlixWebApi.Services
             var files = Directory.GetFiles(path);
             foreach (var folderPath in folders)
             {
-                _heirarchy.LocFiles.Add(new LocFile
+                var filename = Path.GetFileName(folderPath);
+                if (!_ignoreFolders.Contains(filename))
                 {
-                    Name = Path.GetFileName(folderPath),
-                    Path = folderPath
-                });
+                    _heirarchy.LocFiles.Add(new LocFile
+                    {
+                        Name = filename,
+                        Path = folderPath
+                    });
+                }
             }
 
             foreach (var filePath in files)
@@ -66,7 +76,6 @@ namespace LocFlixWebApi.Services
                 var ext = Path.GetExtension(filePath).Split('.')[1];
                 if (_videoFormats.Contains(ext))
                 {
-                    //var relativePath = file.Replace(_rootPath, string.Empty);
                     _heirarchy.LocFiles.Add(new LocFile
                     {
                         Name = Path.GetFileName(filePath),
